@@ -1,0 +1,33 @@
+{% extends "base-layout.html.twig" %}
+
+
+{% block css %}
+{{ parent() }}
+
+<style>
+    body{
+        background-color: blueviolet;
+    }
+</style>
+{% endblock  %}
+{% block content %}
+<h1>Hello {{name}}</h1>
+<ul>
+    
+    {% for item in skills %}
+    <li>{{item}}</li>
+    {% endfor %}
+    
+</ul>
+
+{% if showSkills == false %}
+Yolo
+{% endif %}
+{% set x = '' %}
+{% for i in "a".."f" %}
+{% set x= x~i %}
+{% endfor %}
+
+{{x}}
+{% endblock %}
+
