@@ -4,18 +4,76 @@
 {% block content %}
 {% if personList %}
 
-{% for i in personList %}
-ID :{{i["id"]}}<br>
-firstName : {{i["firstName"] }}<br>
-lastName : {{i["lastName"]}}<br><br>
 
-{% endfor %}
+<table class="table">
+    <thead>
+        <th>ID</th>
+        <th>First name</th>
+        <th>Last Name</th>
+    </thead>
+    <tbody>
+        {% for i in personList %}
+        <tr>
+            <td>
+            {{i["id"]}}
+            </td>
+            <td>
+                <a href="/person/{{i.id}}">
+                    {{ i.firstName }}
+                    </a>
+            </td>
+            <td>
+             {{i["lastName"]}}
+            </td>
+            <td>
+                <a href="/person/form/{{ i.id }}" class="btn btn-primary">
+                    modifier
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+   
+</table>
 {% endif %}
 
+
+
+
+
+
 {% if person %}
-Id : {{person["id"]}} <br>
-First Name: {{person["firstName"]}}<br>
-Last Name: {{person["lastName"]}}<br><br>
+<table class="table">
+<tr>
+    <th>Prenom</th>
+    <td> {{person.firstName }}</td>
+
+</tr>
+<tr>
+    <th>Nom</th>
+    <td> {{person.lastName  }}</td>
+
+</tr>
+<tr>
+    <th>Prenom</th>
+    <td> {{person.firstName }}</td>
+
+</tr>
+<tr>
+    <th>Address</th>
+    <td> Street:  {{address.street }}<br>
+        City:   {{address.city }}<br>
+        Zipcode :    {{address.zipCode }}
+    </td>
+
+</tr>
+
+
+
+</table>
+<form action="/person/form/{{person.id}}">
+    <button class ="btn btn-primary mt-2">Modify</button>
+</form>
 {% endif %}
 
 

@@ -13,7 +13,7 @@ use slimApp\middlewares\ApiKey;
 use Slim\Views\Twig;
 
 require_once "../vendor/autoload.php";
-$dev = true;
+$dev = false;
 $dsn = "mysql:host=localhost;dbname=formation_cda_2022;charset=utf8";
 $user = "root";
 $pass = "";
@@ -46,21 +46,21 @@ if ($dev) {
     $app->add(Whoops::class);
 }
 // $app->add(ErrorMiddleware::class);
-$app->add($middle);
-$app->add($middle2);
-$apiKey = new ApiKey("12346");
+
+
 
 $app->group("/api/person", function (RouteCollectorProxyInterface $group) {
     $group->get("/insert/{firstName}&{lastName}", [PersonController::class, "insert"]);
     $group->get("/all", [PersonController::class, "showAll"]);
     $group->get("/{id}", [PersonController::class, "showOne"]);
 
-})->add($apiKey);
+});
 
 $app->group("/person", function (RouteCollectorProxyInterface $group) {
     $group->get("/", [PersonWebController::class, "showAll"]);
     $group->get("/form", [PersonWebController::class, "showForm"]);
-    $group->get("/{id}", [PersonWebController::class, "showOne"]);
+    $group->get("/{id:[0-9]+}", [PersonWebController::class, "showOne"]);
+    $group->get("/form/{id:[0-9]+}", [PersonWebController::class, "showForm"]);
     $group->post("/form",[PersonWebController::class, "processForm"]);
 
 });

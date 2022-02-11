@@ -1,23 +1,45 @@
 {% extends "base-layout.html.twig" %}
 
-
 {% block content %}
+    <form method="post" action="/person/form">
+        <input type="hidden" name="contact[id]" value="{{person.id}}">
+        <input type="hidden" name="address[id]" value="{{person.address.id}}">
+        <div class="mb-3">
+            <label class="form-label">Prénom</label>
+            <input class="form-control" type="text" name="contact[firstName]"
+            value="{{person.firstName}}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input class="form-control" type="text" name="contact[lastName]"
+            value="{{person.lastName}}">
+        </div>
 
-<form method="post">
-    <div class="mb-3">
-        <label class="form-label">First Name</label>
-        <input class="form-control" type="text" name="firstName">
-    </div>
+        <fieldset>
+            <legend>Adresse</legend>
+            <div class="mb-3">
+                <label class="form-label">Rue</label>
+                <input class="form-control" type="text" name="address[street]"
+                value="{{person.address.street}}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Code postal</label>
+                <input class="form-control" type="text" name="address[zipCode]"
+                value="{{person.address.zipCode}}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Code postal</label>
+                <input class="form-control" type="text" name="address[city]"
+                value="{{person.address.city}}">
+            </div>
+        </fieldset>
 
-    <div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary w-100">
+                Valider
+            </button>
+        </div>
 
-        <label class="form-label">Last Name</label>
-        <input class="form-control" type="text" name="lastName">
-
-    </div>
-
-
-<button class ="btn btn-primary mt-2" type="submit"name="submit" >Send</button>
-</form>
+    </form>
 
 {% endblock %}

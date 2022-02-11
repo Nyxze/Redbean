@@ -1,65 +1,84 @@
 <?php
 namespace slimApp\controllers;
 
-use Exception;
 use Psr\Http\Message\ResponseInterface;
 use RedBeanPHP\R as R;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-class PersonWebController extends AbstractWebController
-{
+class PersonWebController extends AbstractWebController {
 
+    private function getOnePersonFromId($id){
+        $person = R::load("person", $id);
+        
+        if(! empty($person->address_id)){
+            $address = R::load("address", $person->address_id);
+            $person->address = $address;
+        } else {
+            $person = [
+                "id" => null,
+                "firstName" => "",
+                "lastName" => "",
+                "address" => [
+                    "id" => null,
+                    "street" => "",
+                    "zipCode" => "",
+                    "city" => ""
+                ]
+            ];
+        }
+
+        return $person;
+    }
+
+    public function showAll(ResponseInterface $response){
+        $persons = R::findAll("person");
+        return $this->render(
+            $response, 
+            "person.twig", [
+            "personList" => $persons]
+        );
+    }
+
+    public function showOne($id, ResponseInterface $response){
+        $person = $this->getOnePersonFromId($id);
     
-    public function showAll(ResponseInterface $response)
-    {
-        $personList = R::findAll("person");
-        // $response->getBody()->write(json_encode($personList));
-        return $this->render($response, "person.twig",
-    
-    [
-        "personList"=>$personList,
-    ]);
-
-
-    }
-    public function showOne(ResponseInterface $response, $id)
-    {
-
-        $person = R::findOne("person","id = $id");
-       
-        return $this->render($response, "person.twig",
-    
-    [
-        "person"=>$person,
-    ]);
+        return $this->render(
+            $response, 
+            "person.twig", [
+            "person" => $person]
+        );
     }
 
-    public function showForm(ResponseInterface $response)
-    {
-        return $this->render($response, "form.twig",
-    
-        [
-        ]);
+    public function showForm(ResponseInterface $response, $id = null){
+        $person = $this->getOnePersonFromId($id);
+        return $this->render(
+            $response, 
+            "form.twig", ["person" => $person]
+        );
     }
 
-    public function processForm(ResponseInterface $response){
-        $isPosted = filter_has_var(INPUT_POST,"submit");
-        if($isPosted){
-            $firstName = filter_input(INPUT_POST,"firstName",FILTER_SANITIZE_STRING);
-            $lastName = filter_input(INPUT_POST,"lastName",FILTER_SANITIZE_STRING);
-            if(!empty($firstName)&& !empty($lastName)){
-                $person = R::dispense("person");
-                $person->firstName = $firstName;
-                $person->lastName = $lastName;
-                
-                R::store($person);
+    public function processForm(ResponseInterface $response, 
+    ServerRequestInterface $request){
+        $data = $request->getParsedBody();
 
-            }else{
-                $response->getBody()->write("No value pass");
-            }
+        $address = R::dispense("address");
+        $address->import($data["address"]);
+        R::store($address);
 
-        // $response->withStatus(302)->withHeader("location","/person/");
-        return $response->withStatus(302)->withHeader("location","/person/form");;
+        if(empty($data["contact"]["id"])){
+            $person = R::dispense("person");
+        } else {
+            $person = R::load("person", $data["contact"]["id"]);
+        }
+        
+        $person->import($data["contact"]);
+        $person->address = $address;
+        R::store($person);
+
+        return $response->withStatus(302)
+                        ->withHeader("location", "/person/");
+
     }
 
-    }
 }
