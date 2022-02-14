@@ -21,6 +21,7 @@
         "filp/whoops": "^2.14",
         "middlewares/whoops": "^2.0",
         "slim/twig-view": "^3.3",
-        "twbs/bootstrap": "^5.1"
+        "twbs/bootstrap": "^5.1",
+        "components/jquery": "^3.6"
     }
 }

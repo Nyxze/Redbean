@@ -55,19 +55,25 @@
 
 </tr>
 <tr>
-    <th>Prenom</th>
-    <td> {{person.firstName }}</td>
-
-</tr>
-<tr>
     <th>Address</th>
     <td> Street:  {{address.street }}<br>
         City:   {{address.city }}<br>
         Zipcode :    {{address.zipCode }}
     </td>
-
+    
 </tr>
-
+<br>
+<tr>
+    <th>Tel</th>
+    <td>
+        <ul>
+            {% for i in person.ownPhone %}
+          <li> {{i}} </li> 
+           {% endfor %}
+        </ul>
+        
+    </td>
+</tr>
 
 
 </table>

@@ -1,45 +1,94 @@
 {% extends "base-layout.html.twig" %}
 
-{% block content %}
-    <form method="post" action="/person/form">
-        <input type="hidden" name="contact[id]" value="{{person.id}}">
-        <input type="hidden" name="address[id]" value="{{person.address.id}}">
-        <div class="mb-3">
-            <label class="form-label">Prénom</label>
-            <input class="form-control" type="text" name="contact[firstName]"
-            value="{{person.firstName}}">
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Nom</label>
-            <input class="form-control" type="text" name="contact[lastName]"
-            value="{{person.lastName}}">
-        </div>
+{% block js %}
 
-        <fieldset>
-            <legend>Adresse</legend>
-            <div class="mb-3">
-                <label class="form-label">Rue</label>
-                <input class="form-control" type="text" name="address[street]"
-                value="{{person.address.street}}">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Code postal</label>
-                <input class="form-control" type="text" name="address[zipCode]"
-                value="{{person.address.zipCode}}">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Code postal</label>
-                <input class="form-control" type="text" name="address[city]"
-                value="{{person.address.city}}">
-            </div>
-        </fieldset>
+	{{parent() }}
 
-        <div class="mb-3">
-            <button type="submit" class="btn btn-primary w-100">
-                Valider
-            </button>
-        </div>
+	<script>
+		$(document).ready(function () {
 
-    </form>
+            const $phoneList = $("#phone-list");
+            const $addButton = $("#new-phone-button");
+            const $phoneTemplate = $("#phone-template");
 
+            const $cloneTemplate = $phoneTemplate.clone().removeAttr("id");
+            $phoneTemplate.remove();
+            $addButton.on("click", function(){
+                $phoneList.append($cloneTemplate.clone());
+
+            })
+
+            $phoneList.delegate(".delete","click",function(){
+                $(this).parent().remove();
+
+            })
+
+        })
+	</script>
 {% endblock %}
+{% block content %}
+
+	<form method="post" action="/person/form">
+		<input type="hidden" name="contact[id]" value="{{person.id}}">
+		<input type="hidden" name="address[id]" value="{{person.address.id}}">
+		<div class="mb-3">
+			<label class="form-label">Prénom</label>
+			<input class="form-control" type="text" name="contact[firstName]" value="{{person.firstName}}">
+		</div>
+		<div class="mb-3">
+			<label class="form-label">Nom</label>
+			<input class="form-control" type="text" name="contact[lastName]" value="{{person.lastName}}">
+		</div>
+
+		<fieldset>
+			<legend>Adresse</legend>
+			<div class="mb-3">
+				<label class="form-label">Rue</label>
+				<input class="form-control" type="text" name="address[street]" value="{{person.address.street}}">
+			</div>
+			<div class="mb-3">
+				<label class="form-label">Code postal</label>
+				<input class="form-control" type="text" name="address[zipCode]" value="{{person.address.zipCode}}">
+			</div>
+			<div class="mb-3">
+				<label class="form-label">City</label>
+				<input class="form-control" type="text" name="address[city]" value="{{person.address.city}}">
+			</div>
+            
+		</fieldset>
+		<div class="mt-4 d-flex justify-content-end">
+			<button type="button" class="btn btn-primary mb-3" id="new-phone-button">Add</button>
+		</div>
+
+        
+		<div id="phone-list" class=" mb-4 mt-4">
+			<div id="phone-template" class="mb-4 row">
+                <div class="col-10">
+                    
+                    <input class="form-control mb-2" type="tel" name="phones[numbers][]">
+                </div>
+                <button type="button" class="btn col-2 btn-danger delete">Delete</button>
+
+			</div>
+
+            
+            {% for i in person.ownPhone %}
+            <div id="phone-list" class=" mb-4 mt-4 row">
+                <div class="col-10">
+
+                    <input class="form-control mb-2" type="tel" value ="{{i}}" name="phones[numbers][]">
+                </div>
+                <button type="button" class="btn col-2 btn-danger delete">Delete</button>
+            </div>
+
+             {% endfor %}
+           
+		</div>
+	</fieldset>
+
+	<button type="submit" class="btn btn-primary w-100 mt-2">
+		Valider
+	</button>
+
+
+</form>{% endblock %}
